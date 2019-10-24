@@ -24,16 +24,6 @@ objects:
     selector:
       name: beego-example
 
-- kind: Route
-  apiVersion: v1
-  metadata:
-    name: beego-example
-  spec:
-    host: "${APPLICATION_DOMAIN}"
-    to:
-      kind: Service
-      name: beego-example
-
 - kind: ImageStream
   apiVersion: v1
   metadata:
@@ -64,7 +54,8 @@ objects:
     - type: ConfigChange
     - type: GitHub
       github:
-        secret: "${GITHUB_WEBHOOK_SECRET}"
+        secretReference:
+          name: "github-webhook"
     postCommit:
       script: go test -v ./...
 
@@ -102,6 +93,16 @@ objects:
           ports:
           - containerPort: 8080
 
+# - kind: Route
+#   apiVersion: v1
+#   metadata:
+#     name: beego-example
+#   spec:
+#     host: "${APPLICATION_DOMAIN}"
+#     to:
+#       kind: Service
+#       name: beego-example
+
 parameters:
 - name: SOURCE_REPOSITORY_URL
   description: The URL of the repository with your application source code
@@ -115,8 +116,3 @@ parameters:
 - name: APPLICATION_DOMAIN
   description: The exposed hostname that will route to the Beego service
   value: beego-example.openshiftapps.com
-- name: GITHUB_WEBHOOK_SECRET
-  description: Github trigger secret.  A difficult to guess string encoded as part
-    of the webhook URL.  Not encrypted.
-  generate: expression
-  from: "[a-zA-Z0-9]{40}"
