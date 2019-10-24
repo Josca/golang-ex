@@ -34,7 +34,7 @@ var (
 )
 
 func main() {
-	beego.Info(beego.AppConfig.String("appname"), APP_VER)
+	beego.Info(beego.AppConfig.String("appname1"), APP_VER)
 
 	// Register routers.
 	beego.Router("/", &controllers.AppController{})
